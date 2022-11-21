@@ -5,6 +5,9 @@ using System.Text;
 
 namespace MuseumWall
 {
+    // Questa classe implementa l'oggetto master cui identifica
+    // il raspeberry al qualce gli slave dovranno andare a far riferimento
+    // per l'inizio della riproduzione
     public class Master : Player
     {
         Socket master;
@@ -25,13 +28,27 @@ namespace MuseumWall
             }
         }
 
+        // Entry point per l'eseguibile che andrà a finire sul master
+        static void Main(string[] args)
+        {
+            Master rasp = new Master("192.168.1.228", 65011);
+            rasp.Run();
+        }
+
         private void SendInternal()
         {
-            // inizializzo il messaggio
-            byte[] msg = Encoding.UTF8.GetBytes("1");
+            try
+            {
+                // inizializzo il messaggio
+                byte[] msg = Encoding.UTF8.GetBytes("1");
 
-            // invio il messaggio
-            _ = master.Send(msg, 0, msg.Length, SocketFlags.None);
+                // invio il messaggio
+                _ = master.Send(msg, 0, msg.Length, SocketFlags.None);
+            }
+            catch(SocketException ex)
+            {
+                Console.WriteLine("Si è verificato un errore durante l'invio del messaggio: {0}", ex.ErrorCode);
+            }
         }
 
         public void Run()

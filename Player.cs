@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Sockets;
 namespace MuseumWall
 {
     public class Player
@@ -10,8 +11,15 @@ namespace MuseumWall
 
         public Player(string masterAddr, int port)
         {
-            // inizializzo l'endPoint
-            serverEndPoint = new(Dns.GetHostEntry(masterAddr).AddressList[0], port);
+            try
+            {
+                // inizializzo l'endPoint
+                serverEndPoint = new(Dns.GetHostEntry(masterAddr).AddressList[0], port);
+            }
+            catch(SocketException ex)
+            {
+                Console.WriteLine("Non sono riuscito a creare l'endpoint: {0}", ex.ErrorCode);
+            }
         }
 
 
