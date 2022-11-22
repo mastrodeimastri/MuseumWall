@@ -11,6 +11,8 @@ namespace MuseumWall
     public class Master : Player
     {
         Socket master;
+        Socket[] connections;
+        Thread timer;
 
         public Master(string a, int p) : base(masterAddr: a, port: p)
         {
@@ -21,6 +23,16 @@ namespace MuseumWall
 
                 // bindo il socket master all'endpoint prestabilito
                 master.Bind(serverEndPoint);
+
+                // metto il server in ascolto per le connessioni degli slave
+                master.Listen(100);
+
+                // creo il thread che mi consente di avere un timer entro il
+                // quale vengono accettate le connessioni
+                timer = new Thread(Timer);
+
+                timer.Start();
+                AcceptConn();
             }
             catch (SocketException ex)
             {
@@ -35,6 +47,18 @@ namespace MuseumWall
             rasp.Run();
         }
 
+        // Questa funzione mi permette di accettare
+        // tutte le connessioni ricevute entro un dato lasso di tempo
+        private void AcceptConn()
+        {
+            while(timer.IsAlive)
+            {
+                Socket newConn = master.Accept();
+                connections.Append(newConn);
+            }
+        }
+
+        // Invia ad ogni slave il segnale di inizio
         private void SendInternal()
         {
             try
@@ -42,8 +66,11 @@ namespace MuseumWall
                 // inizializzo il messaggio
                 byte[] msg = Encoding.UTF8.GetBytes("1");
 
-                // invio il messaggio
-                _ = master.Send(msg, 0, msg.Length, SocketFlags.None);
+                foreach (Socket conn in connections)
+                {
+                    // invio il messaggio
+                    _ = conn.Send(msg, 0, msg.Length, SocketFlags.None);
+                }
             }
             catch(SocketException ex)
             {
@@ -53,15 +80,8 @@ namespace MuseumWall
 
         public void Run()
         {
-            // aspetto che i client si connettano all'endpoint
-            Thread.Sleep(10000);
-
             // invio il segnale di inizio riproduzione all'endpoint
             SendInternal();
-
-            // aspetto che i clients ricevano l'informazione
-            Thread.Sleep(100);
-
 
             while(true)
             {

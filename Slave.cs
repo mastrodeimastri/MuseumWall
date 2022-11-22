@@ -11,6 +11,7 @@ namespace MuseumWall
 	public class Slave : Player
 	{
 		Socket client;
+		Thread timer;
 
 		public Slave(string a, int p) : base(masterAddr: a, port: p)
 		{
@@ -19,13 +20,32 @@ namespace MuseumWall
                 // inizializzo il socket client
                 client = new(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-				// connetto il socket al server
-				Connect();
+				// inizializzo il timer
+				timer = new Thread(Timer);
+
+				// starto il server
+				timer.Start();
+
+                // connetto il socket al server
+                Connect();
+
+				// controllo se il socket è connesso
+				if(!client.Connected)
+				{
+					Console.WriteLine("il socket non è connesso all'endpoint");
+					while(true)
+					{
+
+					}
+				}
             }
 			catch(SocketException ex)
 			{
-				// se il socket mi lancia una exception la catturo e la printo a schermo
-				Console.WriteLine("Si è verificato un errore o durante la creazione del socket o durante la connessione con l'endpoint", ex.Message, ex.ErrorCode);
+				// se il socket mi lancia una exception
+				// la catturo e la printo a schermo
+				Console.WriteLine("Si è verificato un errore o durante la " +
+					"creazione del socket o durante la connessione con " +
+					"l'endpoint", ex.Message, ex.ErrorCode);
 			}
         }
 
@@ -38,7 +58,17 @@ namespace MuseumWall
 
 		private async void Connect()
 		{
-			await client.ConnectAsync(serverEndPoint);
+            while (!client.Connected && timer.IsAlive)
+			{
+                try
+                {
+                    await client.ConnectAsync(serverEndPoint);
+                }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine("Non sono riuscito a connettermi al server : {0}", ex.ErrorCode);
+                }
+            }
 		}
 
 		public async void Run()
