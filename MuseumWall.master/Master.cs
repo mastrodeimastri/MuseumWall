@@ -8,7 +8,7 @@ namespace MuseumWall
     // Questa classe implementa l'oggetto master cui identifica
     // il raspeberry al qualce gli slave dovranno andare a far riferimento
     // per l'inizio della riproduzione
-    public class Master : Player
+    public class Master : Common
     {
         Socket master;
         Socket[] connections;
@@ -36,7 +36,8 @@ namespace MuseumWall
             }
             catch (SocketException ex)
             {
-                Console.WriteLine("Si è verificato un errore o nella creazione del socket o nel binding della porta: {0}", ex.ErrorCode);
+                Console.WriteLine("Si è verificato un errore o nella creazione" +
+                    " del socket o nel binding della porta: {0}", ex.ErrorCode);
             }
         }
 

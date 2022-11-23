@@ -8,7 +8,7 @@ namespace MuseumWall
 	// Questa classe implementa l'oggetto slave
 	// cui mi andrà ad identificare un raspberry
 	// che parte in sincronia con il master ed è sottomesso a quel'ultimo
-	public class Slave : Player
+	public class Slave : Common
 	{
 		Socket client;
 		Thread timer;

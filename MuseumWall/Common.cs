@@ -3,13 +3,13 @@ using System.Net;
 using System.Net.Sockets;
 namespace MuseumWall
 {
-    public class Player
+    public class Common
     {
 
         protected int nScreens = 2;
         protected IPEndPoint serverEndPoint;
 
-        public Player(string masterAddr, int port)
+        public Common(string masterAddr, int port)
         {
             try
             {

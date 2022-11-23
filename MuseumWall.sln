@@ -3,24 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 25.0.1704.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MuseumWall", "MuseumWall.csproj", "{3AC66109-DA39-46B8-92F8-2C0DCA85982E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MuseumWall", "MuseumWall\MuseumWall.csproj", "{AD55E781-0BCC-44C5-85E2-FC430FAFC890}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MuseumWall.master", "MuseumWall.master\MuseumWall.master.csproj", "{60628169-8F20-464D-B4BC-1EB422051936}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MuseumWall.slave", "MuseumWall.slave\MuseumWall.slave.csproj", "{FC6E6277-531F-4C66-829A-66B11F487461}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-		Master|Any CPU = Master|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3AC66109-DA39-46B8-92F8-2C0DCA85982E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3AC66109-DA39-46B8-92F8-2C0DCA85982E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3AC66109-DA39-46B8-92F8-2C0DCA85982E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3AC66109-DA39-46B8-92F8-2C0DCA85982E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD55E781-0BCC-44C5-85E2-FC430FAFC890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD55E781-0BCC-44C5-85E2-FC430FAFC890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD55E781-0BCC-44C5-85E2-FC430FAFC890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD55E781-0BCC-44C5-85E2-FC430FAFC890}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60628169-8F20-464D-B4BC-1EB422051936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60628169-8F20-464D-B4BC-1EB422051936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60628169-8F20-464D-B4BC-1EB422051936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60628169-8F20-464D-B4BC-1EB422051936}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC6E6277-531F-4C66-829A-66B11F487461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC6E6277-531F-4C66-829A-66B11F487461}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC6E6277-531F-4C66-829A-66B11F487461}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC6E6277-531F-4C66-829A-66B11F487461}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {6B5AC40A-F283-4B67-B3F3-7B5042092D97}
+		SolutionGuid = {49BD4765-BF4F-47CB-9DE4-79744348343E}
 	EndGlobalSection
 EndGlobal
