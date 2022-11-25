@@ -51,6 +51,7 @@ namespace MuseumWall
         {
             string host = Dns.GetHostName();
             IPAddress ip = Dns.GetHostByName(host).AddressList[0];
+            Console.WriteLine("questo è il mio indirizzo ip: {0}", ip.ToString());
             serverEndPoint = new(ip, 65011);
 
         }
