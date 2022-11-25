@@ -18,7 +18,7 @@ namespace MuseumWall
         // connessioni degli slave
         protected void Timer()
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(10000);
         }
 
 

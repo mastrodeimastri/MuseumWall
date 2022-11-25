@@ -80,6 +80,7 @@ namespace MuseumWall
 			// inizializzo il buffer dove ricevere il messaggio
 			byte[] buffer = new byte[256];
 
+			Console.WriteLine("sono in attesa di ricevere il segnale");
 			// sto in attesa di ricevere il messaggio
 			client.Receive(buffer, SocketFlags.None);
 
