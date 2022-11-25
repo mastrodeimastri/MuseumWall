@@ -22,7 +22,7 @@ namespace MuseumWall
 				host = a;
 				port = p;
                 // inizializzo il socket client
-                client = new Socket(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
 				// inizializzo il timer
 				timer = new Thread(Timer);
@@ -60,7 +60,7 @@ namespace MuseumWall
 			rasp.Run();
 		}
 
-		private async void Connect()
+		private void Connect()
 		{
             while (!client.Connected && timer.IsAlive)
 			{
@@ -81,15 +81,16 @@ namespace MuseumWall
 			byte[] buffer = new byte[256];
 
 			// sto in attesa di ricevere il messaggio
-			_ = await client.ReceiveAsync(buffer, SocketFlags.None);
+			client.Receive(buffer, SocketFlags.None);
 
 			while(true)
 			{
+				Console.WriteLine("2");
                 // avvio la riproduzione dei video
-                for (int i = 0; i < nScreens; i++)
-                {
-                    PlayBack(i);
-                }
+                //for (int i = 0; i < nScreens; i++)
+                //{
+                //    PlayBack(i);
+                //}
             }
 		}
 	}

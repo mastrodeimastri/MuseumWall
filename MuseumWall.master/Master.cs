@@ -10,10 +10,14 @@ namespace MuseumWall
     // per l'inizio della riproduzione
     public class Master : Common
     {
+        int nRaps = 0;
+
         Socket master;
         Socket[] connections;
         Thread timer;
+        Thread listener;
         IPEndPoint serverEndPoint;
+        SemaphoreSlim sem = new(1);
 
         public Master()
         {
@@ -35,8 +39,17 @@ namespace MuseumWall
                 // quale vengono accettate le connessioni
                 timer = new Thread(Timer);
 
+                //creo il thread che rimarrà in ascolto di nuove possibili connessioni
+                listener = new(AcceptConn);
+
+                // avvio i thread
                 timer.Start();
-                AcceptConn();
+                listener.Start();
+
+                // aspetto che il timer finisca per poter iniziare
+                // l'invio del segnale e la riproduzione
+                timer.Join();
+                
             }
             catch (SocketException ex)
             {
@@ -67,10 +80,19 @@ namespace MuseumWall
         // tutte le connessioni ricevute entro un dato lasso di tempo
         private void AcceptConn()
         {
-            while(timer.IsAlive)
+            while(true)
             {
                 Socket newConn = master.Accept();
+
+                // aspetto di entrare nel semaforo se occupato
+                sem.Wait();
+
+                Console.WriteLine("ho ricevuto una connessione");
+
                 connections.Append(newConn);
+
+                // esco dal semaforo
+                sem.Release();
             }
         }
 
@@ -82,11 +104,17 @@ namespace MuseumWall
                 // inizializzo il messaggio
                 byte[] msg = Encoding.UTF8.GetBytes("1");
 
-                foreach(Socket conn in connections)
+                // aspetto di entrare nel semaforo se occupato
+                sem.Wait();
+
+                for(int i = nRaps; i < connections.Length; i++)
                 {
                     // invio il messaggio
-                    _ = conn.Send(msg, 0, msg.Length, SocketFlags.None);
+                    _ = connections[i].Send(msg, 0, msg.Length, SocketFlags.None);
                 }
+
+                // esco dal semaforo
+                sem.Release();
             }
             catch(SocketException ex)
             {
@@ -101,11 +129,12 @@ namespace MuseumWall
 
             while(true)
             {
+                Console.WriteLine("1");
                 // avvio la riproduzione sugli schermi
-                for (int i = 0; i < nScreens; i++)
-                {
-                    PlayBack(i);
-                }
+                //for (int i = 0; i < nScreens; i++)
+                //{
+                //    PlayBack(i);
+                //}
             }
         }
     }
