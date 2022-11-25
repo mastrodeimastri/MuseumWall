@@ -16,8 +16,6 @@ namespace MuseumWall
 
         Socket master;
         Socket[] connections = new Socket[100];
-        Thread timer;
-        Thread listener;
         IPEndPoint serverEndPoint;
         SemaphoreSlim sem = new(1);
 
@@ -38,16 +36,15 @@ namespace MuseumWall
                 // metto il server in ascolto per le connessioni degli slave
                 master.Listen(100);
 
-                // creo il thread che mi consente di avere un timer entro il
-                // quale vengono accettate le connessioni
-                timer = new Thread(Timer);
+                // creo l'oggetto listener che mi permette
+                // di lasciare un thread in attesa di nuove connessioni
+                Listener listener = new(ref master, ref connections, ref sem, ref nConnected);
 
-                //creo il thread che rimarrà in ascolto di nuove possibili connessioni
-                listener = new(AcceptConn);
+                // avvio il timer
+                startTimer();
 
-                // avvio i thread
-                timer.Start();
-                listener.Start();
+                // avvio l'ascolto
+                listener.startListening();
 
                 // aspetto che il timer finisca per poter iniziare
                 // l'invio del segnale e la riproduzione
@@ -82,65 +79,12 @@ namespace MuseumWall
             rasp.Run();
         }
 
-        // Questa funzione mi permette di accettare
-        // tutte le connessioni ricevute entro un dato lasso di tempo
-        private void AcceptConn()
-        {
-            while(true)
-            {
-                Console.WriteLine("sono in attesa");
-                Socket newConn = master.Accept();
-
-                // aspetto di entrare nel semaforo se occupato
-                sem.Wait();
-
-                Console.WriteLine("ho ricevuto una connessione");
-
-                connections[nConnected] = newConn;
-
-                nConnected++;
-
-                Console.WriteLine("ho rilasciato il semaforo");
-
-                // esco dal semaforo
-                sem.Release();
-            }
-        }
-
-        // Invia ad ogni slave il segnale di inizio
-        private void SendInternal()
-        {
-            try
-            {
-                // inizializzo il messaggio
-                byte[] msg = Encoding.UTF8.GetBytes("1");
-
-                // aspetto di entrare nel semaforo se occupato
-                sem.Wait();
-
-                // se ho raspberry connessi all'endpoint,
-                // invio il segnale di riproduzione
-                if (nConnected != 0)
-                {
-                    for (int i = (nRunning); i < nConnected; i++, nRunning++)
-                    {
-                        // invio il messaggio
-                        _ = connections[i].Send(msg, 0, msg.Length, SocketFlags.None);
-                    }
-                }
-                // esco dal semaforo
-                sem.Release();
-            }
-            catch(SocketException ex)
-            {
-                Console.WriteLine("Si è verificato un errore durante l'invio del messaggio: {0}", ex.ErrorCode);
-            }
-        }
-
         public void Run()
         {
-            // invio il segnale di inizio riproduzione all'endpoint
-            SendInternal();
+
+            Handler handler = new(ref connections, ref sem, ref nConnected, ref nRunning);
+
+            handler.Send();
 
             while(true)
             {
@@ -148,7 +92,7 @@ namespace MuseumWall
 
                 if( nRunning != nConnected)
                 {
-                    SendInternal();
+                    handler.Send();
                 }
 
                 // avvio la riproduzione sugli schermi
