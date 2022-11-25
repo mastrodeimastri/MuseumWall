@@ -1,25 +1,16 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
+
 namespace MuseumWall
 {
     public class Common
     {
+        protected int nScreens = 1;
 
-        protected int nScreens = 2;
-        protected IPEndPoint serverEndPoint;
-
-        public Common(string masterAddr, int port)
+        public Common()
         {
-            try
-            {
-                // inizializzo l'endPoint
-                serverEndPoint = new(Dns.GetHostEntry(masterAddr).AddressList[0], port);
-            }
-            catch(SocketException ex)
-            {
-                Console.WriteLine("Non sono riuscito a creare l'endpoint: {0}", ex.ErrorCode);
-            }
         }
 
         // Questa funzione crea un timer di 10 secondi che
@@ -35,9 +26,11 @@ namespace MuseumWall
         {
             // avvio la riproduzione sul display selezionato
             if (display == 0)
-                System.Diagnostics.Process.Start("omxplayer --no-osd --display 0 1.mp4 > /dev/null/ &");
+                // System.Diagnostics.Process.Start("omxplayer --no-osd --display 0 1.mp4 > /dev/null/ &");
+                Console.WriteLine("1");
             else
-                System.Diagnostics.Process.Start("omxplayer --no-osd --display 7 2.mp4 > /dev/null/ &");
+                // System.Diagnostics.Process.Start("omxplayer --no-osd --display 7 2.mp4 > /dev/null/ &");
+                Console.WriteLine("2");
         }
 
         public void PlayBack(int display)

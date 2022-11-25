@@ -12,13 +12,17 @@ namespace MuseumWall
 	{
 		Socket client;
 		Thread timer;
+		string host;
+		int port;
 
-		public Slave(string a, int p) : base(masterAddr: a, port: p)
+		public Slave(string a, int p)
 		{
 			try
 			{
+				host = a;
+				port = p;
                 // inizializzo il socket client
-                client = new(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                client = new Socket(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
 				// inizializzo il timer
 				timer = new Thread(Timer);
@@ -52,7 +56,7 @@ namespace MuseumWall
 		// Entry point dell'eseguibile che andrà a finire sugli slave
 		static void Main(string[] args)
 		{
-			Slave rasp = new Slave("192.168.1.228", 65011);
+			Slave rasp = new Slave("192.168.1.101", 65011);
 			rasp.Run();
 		}
 
@@ -62,7 +66,7 @@ namespace MuseumWall
 			{
                 try
                 {
-                    await client.ConnectAsync(serverEndPoint);
+					client.Connect(host, port);
                 }
                 catch (SocketException ex)
                 {

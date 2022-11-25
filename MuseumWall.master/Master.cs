@@ -13,11 +13,15 @@ namespace MuseumWall
         Socket master;
         Socket[] connections;
         Thread timer;
+        IPEndPoint serverEndPoint;
 
-        public Master(string a, int p) : base(masterAddr: a, port: p)
+        public Master()
         {
             try
             {
+                // Creo l'endpoint
+                CreateEndPoint();
+
                 // inizializzo il socket master che mi fa da server
                 master = new(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
@@ -41,10 +45,20 @@ namespace MuseumWall
             }
         }
 
+        // Questa funzione crea l'oggetto endpoint
+        // sul quale il master rimarrà in ascolto delle connessioni
+        private void CreateEndPoint()
+        {
+            string host = Dns.GetHostName();
+            IPAddress ip = Dns.GetHostByName(host).AddressList[0];
+            serverEndPoint = new(ip, 65011);
+
+        }
+
         // Entry point per l'eseguibile che andrà a finire sul master
         static void Main(string[] args)
         {
-            Master rasp = new Master("192.168.1.228", 65011);
+            Master rasp = new Master();
             rasp.Run();
         }
 
@@ -67,7 +81,7 @@ namespace MuseumWall
                 // inizializzo il messaggio
                 byte[] msg = Encoding.UTF8.GetBytes("1");
 
-                foreach (Socket conn in connections)
+                foreach(Socket conn in connections)
                 {
                     // invio il messaggio
                     _ = conn.Send(msg, 0, msg.Length, SocketFlags.None);
