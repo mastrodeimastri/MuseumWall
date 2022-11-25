@@ -33,15 +33,12 @@ namespace MuseumWall
                 // bindo il socket master all'endpoint prestabilito
                 master.Bind(serverEndPoint);
 
-                // metto il server in ascolto per le connessioni degli slave
-                master.Listen(100);
-
                 // creo l'oggetto listener che mi permette
                 // di lasciare un thread in attesa di nuove connessioni
                 Listener listener = new(ref master, ref connections, ref sem, ref nConnected);
 
                 // avvio il timer
-                startTimer();
+                StartTimer();
 
                 // avvio l'ascolto
                 listener.startListening();

@@ -6,10 +6,11 @@ namespace MuseumWall
 {
 	public class Handler
 	{
-		Socket[] conn;
+        int conned;
+        int runn;
+
+        Socket[] conn;
         SemaphoreSlim semaph;
-		int conned;
-		int runn;
 
 		public Handler(ref Socket[] connections,ref SemaphoreSlim semaphore, ref int connected, ref int running)
 		{

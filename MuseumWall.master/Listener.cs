@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Diagnostics.Metrics;
 using System.Net.Sockets;
 
 namespace MuseumWall
 {
 	public class Listener
 	{
-		Socket soc;
+        int i;
+
+        Socket soc;
         Socket[] conn;
         SemaphoreSlim semaph;
-        int i;
 
 		public Listener(ref Socket masterSoc, ref Socket[] connections, ref SemaphoreSlim semaphore, ref int index)
 		{
@@ -20,13 +22,19 @@ namespace MuseumWall
 
 		public void startListening()
 		{
-			Thread listener = new(AcceptConn);
+            // metto il server in ascolto per le connessioni degli slave
+            soc.Listen(100);
+
+            // creo il thread che starà in ascolto
+            Thread listener = new(AcceptConn);
+
+            // avvio il thread
             listener.Start();
 		}
 
 
         // Questa funzione mi permette di accettare
-        // tutte le connessioni ricevute entro un dato lasso di tempo
+        // tutte le connessioni ricevute
         private void AcceptConn()
         {
             while (true)

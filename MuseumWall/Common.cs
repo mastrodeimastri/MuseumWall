@@ -22,7 +22,7 @@ namespace MuseumWall
             Thread.Sleep(10000);
         }
 
-        protected void startTimer()
+        protected void StartTimer()
         {
             timer = new(Timer);
             timer.Start();
