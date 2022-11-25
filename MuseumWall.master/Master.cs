@@ -10,8 +10,9 @@ namespace MuseumWall
     // per l'inizio della riproduzione
     public class Master : Common
     {
-        int nRaps = 0;
-        int connected = 0;
+        // inizializzo gli indici per scorrere l'array
+        int nConnected = 0;
+        int nRunning = 0;
 
         Socket master;
         Socket[] connections = new Socket[100];
@@ -95,9 +96,9 @@ namespace MuseumWall
 
                 Console.WriteLine("ho ricevuto una connessione");
 
-                connections[nRaps] = newConn;
+                connections[nConnected] = newConn;
 
-                nRaps++;
+                nConnected++;
 
                 Console.WriteLine("ho rilasciato il semaforo");
 
@@ -117,10 +118,11 @@ namespace MuseumWall
                 // aspetto di entrare nel semaforo se occupato
                 sem.Wait();
 
-                // se ho raspberry connessi all'endpoint, invio il segnale di riproduzione
-                if (nRaps != 0)
+                // se ho raspberry connessi all'endpoint,
+                // invio il segnale di riproduzione
+                if (nConnected != 0)
                 {
-                    for (int i = (connected); i < nRaps; i++, connected++)
+                    for (int i = (nRunning); i < nConnected; i++, nRunning++)
                     {
                         // invio il messaggio
                         _ = connections[i].Send(msg, 0, msg.Length, SocketFlags.None);
@@ -144,10 +146,11 @@ namespace MuseumWall
             {
                 Console.WriteLine("1");
 
-                if(nRaps != connections.Length)
+                if( nRunning != nConnected)
                 {
                     SendInternal();
                 }
+
                 // avvio la riproduzione sugli schermi
                 //for (int i = 0; i < nScreens; i++)
                 //{
