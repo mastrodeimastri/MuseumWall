@@ -6,24 +6,17 @@ namespace MuseumWall
 {
 	public class Listener
 	{
-        int i;
+        Vars v;
 
-        Socket soc;
-        Socket[] conn;
-        SemaphoreSlim semaph;
-
-		public Listener(ref Socket masterSoc, ref Socket[] connections, ref SemaphoreSlim semaphore, ref int index)
+		public Listener(ref Vars variables)
 		{
-			soc = masterSoc;
-            conn = connections;
-            semaph = semaphore;
-            i = index;
+            v = (Vars) variables.ShallowCopy();
 		}
 
 		public void startListening()
 		{
             // metto il server in ascolto per le connessioni degli slave
-            soc.Listen(100);
+            v.master.Listen(100);
 
             // creo il thread che starà in ascolto
             Thread listener = new(AcceptConn);
@@ -40,21 +33,21 @@ namespace MuseumWall
             while (true)
             {
                 Console.WriteLine("sono in attesa");
-                Socket newConn = soc.Accept();
+                Socket newConn = v.master.Accept();
 
                 // aspetto di entrare nel semaforo se occupato
-                semaph.Wait();
+                v.sem.Wait();
 
                 Console.WriteLine("ho ricevuto una connessione");
 
-                conn[i] = newConn;
+                v.connections[v.nConnected] = newConn;
 
-                i++;
+                v.nConnected++;
 
                 Console.WriteLine("ho rilasciato il semaforo");
 
                 // esco dal semaforo
-                semaph.Release();
+                v.sem.Release();
             }
         }
     }

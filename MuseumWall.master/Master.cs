@@ -5,37 +5,56 @@ using System.Text;
 
 namespace MuseumWall
 {
+    public struct Vars
+    {
+        public int nConnected;
+        public int nRunning;
+
+        public Socket master;
+        public Socket[] connections;
+        public IPEndPoint serverEndPoint;
+        public SemaphoreSlim sem;
+
+        public Vars()
+        {
+            nConnected = 0;
+            nRunning = 0;
+
+            connections = new Socket[100];
+            sem = new(1);
+        }
+
+        public object ShallowCopy()
+        {
+            return this.MemberwiseClone();
+        }
+    }
+
     // Questa classe implementa l'oggetto master cui identifica
     // il raspeberry al qualce gli slave dovranno andare a far riferimento
     // per l'inizio della riproduzione
     public class Master : Common
     {
-        // inizializzo gli indici per scorrere l'array
-        int nConnected = 0;
-        int nRunning = 0;
-
-        Socket master;
-        Socket[] connections = new Socket[100];
-        IPEndPoint serverEndPoint;
-        SemaphoreSlim sem = new(1);
+        Vars v;
 
         public Master()
         {
             try
             {
+                v = new Vars();
 
                 // Creo l'endpoint
                 CreateEndPoint();
 
                 // inizializzo il socket master che mi fa da server
-                master = new(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                v.master = new(v.serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
                 // bindo il socket master all'endpoint prestabilito
-                master.Bind(serverEndPoint);
+                v.master.Bind(v.serverEndPoint);
 
                 // creo l'oggetto listener che mi permette
                 // di lasciare un thread in attesa di nuove connessioni
-                Listener listener = new(ref master, ref connections, ref sem, ref nConnected);
+                Listener listener = new(ref v);
 
                 // avvio il timer
                 StartTimer();
@@ -47,7 +66,8 @@ namespace MuseumWall
                 // l'invio del segnale e la riproduzione
                 timer.Join();
                 Console.WriteLine("timer finito");
-                
+                Console.WriteLine("connessioni ricevute: {0}", v.nConnected);
+
             }
             catch (SocketException ex)
             {
@@ -67,7 +87,7 @@ namespace MuseumWall
             
 
             Console.WriteLine("questo è il mio indirizzo ip: {0}", ip.ToString());
-            serverEndPoint = new(ip, 65011);
+            v.serverEndPoint = new(ip, 65011);
 
         }
 
@@ -81,7 +101,7 @@ namespace MuseumWall
         public void Run()
         {
 
-            Handler handler = new(ref connections, ref sem, ref nConnected, ref nRunning);
+            Handler handler = new(ref v);
 
             handler.Send();
 
@@ -89,7 +109,7 @@ namespace MuseumWall
             {
                 //Console.WriteLine("1");
 
-                if( nRunning != nConnected)
+                if( v.nRunning != v.nConnected)
                 {
                     handler.Send();
                 }

@@ -4,20 +4,14 @@ using System.Text;
 
 namespace MuseumWall
 {
-	public class Handler
+
+    public class Handler
 	{
-        int conned;
-        int runn;
+        Vars v;
 
-        Socket[] conn;
-        SemaphoreSlim semaph;
-
-		public Handler(ref Socket[] connections,ref SemaphoreSlim semaphore, ref int connected, ref int running)
+		public Handler(ref Vars variables)
 		{
-			conn = connections;
-			conned = connected;
-			runn = running;
-            semaph = semaphore;
+           v = (Vars) variables.ShallowCopy();
 		}
 
 		public void Send()
@@ -33,22 +27,24 @@ namespace MuseumWall
                 // inizializzo il messaggio
                 byte[] msg = Encoding.UTF8.GetBytes("1");
 
+                Console.WriteLine("Handler: aspetto il semaforo");
                 // aspetto di entrare nel semaforo se occupato
-                semaph.Wait();
+                v.sem.Wait();
 
                 // se ho raspberry connessi all'endpoint,
                 // invio il segnale di riproduzione
-                if (conned != 0)
+                if (v.nConnected != 0)
                 {
-                    for (int i = (runn); i < conned; i++, runn++)
+                    for (int i = (v.nRunning); i < v.nConnected; i++, v.nRunning++)
                     {
                         // invio il messaggio
-                        _ = conn[i].Send(msg, 0, msg.Length, SocketFlags.None);
+                        _ = v.connections[i].Send(msg, 0, msg.Length, SocketFlags.None);
                         Console.WriteLine("ho inviato il messaggio");
                     }
                 }
                 // esco dal semaforo
-                semaph.Release();
+                v.sem.Release();
+                Console.WriteLine("Handler: ho rilasciato il semaforo");
             }
             catch (SocketException ex)
             {
