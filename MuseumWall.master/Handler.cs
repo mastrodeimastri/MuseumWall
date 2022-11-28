@@ -44,6 +44,7 @@ namespace MuseumWall
                     {
                         // invio il messaggio
                         _ = conn[i].Send(msg, 0, msg.Length, SocketFlags.None);
+                        Console.WriteLine("ho inviato il messaggio");
                     }
                 }
                 // esco dal semaforo

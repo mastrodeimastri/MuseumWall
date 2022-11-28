@@ -1,0 +1,12 @@
+* Progetto master
+
+il Progetto master si struttura su tre diversi file :
+
+#+begin_quote
+ - Master
+ - Listener
+ - Handler
+#+end_quote
+
+Lo scopo di questa suddivisione è quello di creare due oggetti secondari ( listener e handler ) che poi andranno utilizzatti dall'oggetto principale ( master ) per adempiere a tutte le sue funzioni.
+Per fare ciò, gli oggetti secondari creati devono poter accedere e modificare le variabili interne dell'oggetto principale tramite un sistema a semaforo per evitare criticità di concorrenza.

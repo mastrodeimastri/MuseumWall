@@ -62,7 +62,9 @@ namespace MuseumWall
         {
             IPAddress ip;
             string host = Dns.GetHostName();
-            ip = Dns.GetHostByName(host).AddressList[0];
+
+            ip = Dns.GetHostAddresses("192.168.1.101")[0];
+            
 
             Console.WriteLine("questo è il mio indirizzo ip: {0}", ip.ToString());
             serverEndPoint = new(ip, 65011);
@@ -85,7 +87,7 @@ namespace MuseumWall
 
             while(true)
             {
-                Console.WriteLine("1");
+                //Console.WriteLine("1");
 
                 if( nRunning != nConnected)
                 {
