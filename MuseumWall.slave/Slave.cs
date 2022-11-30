@@ -31,17 +31,13 @@ namespace MuseumWall
 				timer.Start();
 
                 // connetto il socket al server
-                Connect();
-
-				// controllo se il socket è connesso
-				if(!client.Connected)
+				while(!client.Connected)
 				{
-					Console.WriteLine("il socket non è connesso all'endpoint");
-					while(true)
-					{
+                    Connect();
 
-					}
-				}
+					if (!client.Connected)
+						Console.WriteLine("non sono riuscito a connettermi al server");
+                }
             }
 			catch(SocketException ex)
 			{
@@ -86,12 +82,12 @@ namespace MuseumWall
 
 			while(true)
 			{
-				Console.WriteLine("2");
+				//Console.WriteLine("2");
                 // avvio la riproduzione dei video
-                //for (int i = 0; i < nScreens; i++)
-                //{
-                //    PlayBack(i);
-                //}
+                for (int i = 0; i < nScreens; i++)
+                {
+                    PlayBack(i);
+                }
             }
 		}
 	}

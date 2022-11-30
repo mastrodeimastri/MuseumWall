@@ -139,23 +139,19 @@ namespace MuseumWall
 
         public void Run()
         {
-            // invio il segnale di inizio riproduzione all'endpoint
-            SendInternal();
-
             while(true)
             {
-                Console.WriteLine("1");
-
+                // invio il segnale di riproduzione ai rasp che sono in attesa
                 if( nRunning != nConnected)
                 {
                     SendInternal();
                 }
 
                 // avvio la riproduzione sugli schermi
-                //for (int i = 0; i < nScreens; i++)
-                //{
-                //    PlayBack(i);
-                //}
+                for (int i = 0; i < nScreens; i++)
+                {
+                    PlayBack(i);
+                }
             }
         }
     }

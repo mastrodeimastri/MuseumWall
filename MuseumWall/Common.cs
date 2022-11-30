@@ -26,11 +26,11 @@ namespace MuseumWall
         {
             // avvio la riproduzione sul display selezionato
             if (display == 0)
-                // System.Diagnostics.Process.Start("omxplayer --no-osd --display 0 1.mp4 > /dev/null/ &");
-                Console.WriteLine("1");
+                System.Diagnostics.Process.Start("omxplayer --no-osd --display 0 1.mp4 > /dev/null/ &");
+                //Console.WriteLine("1");
             else
-                // System.Diagnostics.Process.Start("omxplayer --no-osd --display 7 2.mp4 > /dev/null/ &");
-                Console.WriteLine("2");
+                System.Diagnostics.Process.Start("omxplayer --no-osd --display 7 2.mp4 > /dev/null/ &");
+                //Console.WriteLine("2");
         }
 
         public void PlayBack(int display)
