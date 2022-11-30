@@ -8,7 +8,6 @@ namespace MuseumWall
     public class Common
     {
         protected int nScreens = 1;
-        protected Thread timer;
 
         public Common()
         {
@@ -22,11 +21,6 @@ namespace MuseumWall
             Thread.Sleep(10000);
         }
 
-        protected void StartTimer()
-        {
-            timer = new(Timer);
-            timer.Start();
-        }
 
         private void PlaybackInternal(int display)
         {

@@ -5,69 +5,55 @@ using System.Text;
 
 namespace MuseumWall
 {
-    public struct Vars
-    {
-        public int nConnected;
-        public int nRunning;
-
-        public Socket master;
-        public Socket[] connections;
-        public IPEndPoint serverEndPoint;
-        public SemaphoreSlim sem;
-
-        public Vars()
-        {
-            nConnected = 0;
-            nRunning = 0;
-
-            connections = new Socket[100];
-            sem = new(1);
-        }
-
-        public object ShallowCopy()
-        {
-            return this.MemberwiseClone();
-        }
-    }
-
     // Questa classe implementa l'oggetto master cui identifica
     // il raspeberry al qualce gli slave dovranno andare a far riferimento
     // per l'inizio della riproduzione
     public class Master : Common
     {
-        Vars v;
+        // inizializzo gli indici per scorrere l'array
+        int nConnected = 0;
+        int nRunning = 0;
+
+        Socket master;
+        Socket[] connections = new Socket[100];
+        Thread timer;
+        Thread listener;
+        IPEndPoint serverEndPoint;
+        SemaphoreSlim sem = new(1);
 
         public Master()
         {
             try
             {
-                v = new Vars();
 
-                // Creo l'endpoint a cui collegarsi
+                // Creo l'endpoint
                 CreateEndPoint();
 
                 // inizializzo il socket master che mi fa da server
-                v.master = new(v.serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                master = new(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
                 // bindo il socket master all'endpoint prestabilito
-                v.master.Bind(v.serverEndPoint);
+                master.Bind(serverEndPoint);
 
-                // creo l'oggetto listener che mi permette
-                // di lasciare un thread in attesa di nuove connessioni
-                Listener listener = new(ref v);
+                // metto il server in ascolto per le connessioni degli slave
+                master.Listen(100);
 
-                // avvio il timer
-                StartTimer();
+                // creo il thread che mi consente di avere un timer entro il
+                // quale vengono accettate le connessioni
+                timer = new Thread(Timer);
 
-                // avvio l'ascolto
-                listener.startListening();
+                //creo il thread che rimarrà in ascolto di nuove possibili connessioni
+                listener = new(AcceptConn);
+
+                // avvio i thread
+                timer.Start();
+                listener.Start();
 
                 // aspetto che il timer finisca per poter iniziare
                 // l'invio del segnale e la riproduzione
                 timer.Join();
                 Console.WriteLine("timer finito");
-                Console.WriteLine("connessioni ricevute: {0}", v.nConnected);
-
+                
             }
             catch (SocketException ex)
             {
@@ -82,12 +68,10 @@ namespace MuseumWall
         {
             IPAddress ip;
             string host = Dns.GetHostName();
-
-            ip = Dns.GetHostAddresses("192.168.1.101")[0];
-            
+            ip = Dns.GetHostByName(host).AddressList[0];
 
             Console.WriteLine("questo è il mio indirizzo ip: {0}", ip.ToString());
-            v.serverEndPoint = new(ip, 65011);
+            serverEndPoint = new(ip, 65011);
 
         }
 
@@ -98,20 +82,73 @@ namespace MuseumWall
             rasp.Run();
         }
 
+        // Questa funzione mi permette di accettare
+        // tutte le connessioni ricevute entro un dato lasso di tempo
+        private void AcceptConn()
+        {
+            while(true)
+            {
+                Console.WriteLine("sono in attesa");
+                Socket newConn = master.Accept();
+
+                // aspetto di entrare nel semaforo se occupato
+                sem.Wait();
+
+                Console.WriteLine("ho ricevuto una connessione");
+
+                connections[nConnected] = newConn;
+
+                nConnected++;
+
+                Console.WriteLine("ho rilasciato il semaforo");
+
+                // esco dal semaforo
+                sem.Release();
+            }
+        }
+
+        // Invia ad ogni slave il segnale di inizio
+        private void SendInternal()
+        {
+            try
+            {
+                // inizializzo il messaggio
+                byte[] msg = Encoding.UTF8.GetBytes("1");
+
+                // aspetto di entrare nel semaforo se occupato
+                sem.Wait();
+
+                // se ho raspberry connessi all'endpoint,
+                // invio il segnale di riproduzione
+                if (nConnected != 0)
+                {
+                    for (int i = (nRunning); i < nConnected; i++, nRunning++)
+                    {
+                        // invio il messaggio
+                        _ = connections[i].Send(msg, 0, msg.Length, SocketFlags.None);
+                    }
+                }
+                // esco dal semaforo
+                sem.Release();
+            }
+            catch(SocketException ex)
+            {
+                Console.WriteLine("Si è verificato un errore durante l'invio del messaggio: {0}", ex.ErrorCode);
+            }
+        }
+
         public void Run()
         {
-
-            Handler handler = new(ref v);
-
-            handler.Send();
+            // invio il segnale di inizio riproduzione all'endpoint
+            SendInternal();
 
             while(true)
             {
-                //Console.WriteLine("1");
+                Console.WriteLine("1");
 
-                if( v.nRunning != v.nConnected)
+                if( nRunning != nConnected)
                 {
-                    handler.Send();
+                    SendInternal();
                 }
 
                 // avvio la riproduzione sugli schermi

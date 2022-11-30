@@ -11,6 +11,7 @@ namespace MuseumWall
 	public class Slave : Common
 	{
 		Socket client;
+		Thread timer;
 		string host;
 		int port;
 
@@ -23,8 +24,11 @@ namespace MuseumWall
                 // inizializzo il socket client
                 client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
-				// starto il timer
-				StartTimer();
+				// inizializzo il timer
+				timer = new Thread(Timer);
+
+				// starto il server
+				timer.Start();
 
                 // connetto il socket al server
                 Connect();
@@ -33,7 +37,6 @@ namespace MuseumWall
 				if(!client.Connected)
 				{
 					Console.WriteLine("il socket non è connesso all'endpoint");
-
 					while(true)
 					{
 
