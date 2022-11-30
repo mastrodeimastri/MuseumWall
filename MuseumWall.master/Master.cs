@@ -43,7 +43,7 @@ namespace MuseumWall
             {
                 v = new Vars();
 
-                // Creo l'endpoint
+                // Creo l'endpoint a cui collegarsi
                 CreateEndPoint();
 
                 // inizializzo il socket master che mi fa da server
