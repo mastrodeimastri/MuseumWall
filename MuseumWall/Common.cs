@@ -29,7 +29,7 @@ namespace MuseumWall
             if (display == 0)
                 try
                 {
-                    System.Diagnostics.Process.Start("/bin/omxplayer", "--display 0 /home/pi/Slave/1.mp4").WaitForExit();
+                    System.Diagnostics.Process.Start("/bin/omxplayer", "--display 0 /home/pi/video/1.mp4").WaitForExit();
                 }
                 catch(System.ComponentModel.Win32Exception ex)
                 {

@@ -82,7 +82,7 @@ namespace MuseumWall
         private void CreateEndPoint()
         {
             IPAddress ip;
-            ip = Dns.GetHostAddresses("192.168.1.101")[0];
+            ip = Dns.GetHostAddresses("192.168.1.112")[0];
 
             Console.WriteLine("questo è il mio indirizzo ip: {0}", ip.ToString());
             serverEndPoint = new(ip, 65011);
@@ -164,8 +164,8 @@ namespace MuseumWall
                 // avvio la riproduzione sugli schermi
                 for (int i = 0; i < nScreens; i++)
                 {
-                    Console.WriteLine("dovrei riprodurre il video {0}", i);
-                    //PlayBack(i);
+                    //Console.WriteLine("dovrei riprodurre il video {0}", i);
+                    PlayBack(i);
                 }
             }
         }

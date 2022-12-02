@@ -37,7 +37,7 @@ namespace MuseumWall
                 Connect();
 
 				// se non è connesso al server scrivo
-				// a terminale ubn messaggio di errore
+				// a terminale un messaggio di errore
 				if (!client.Connected)
 					Console.WriteLine("non sono riuscito a connettermi al server");
             }
@@ -54,7 +54,7 @@ namespace MuseumWall
 		// Entry point dell'eseguibile che andrà a finire sugli slave
 		static void Main(string[] args)
 		{
-			Slave rasp = new Slave("192.168.1.101", 65011);
+			Slave rasp = new Slave("192.168.1.112", 65011);
 			rasp.Run();
 		}
 
