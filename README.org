@@ -14,7 +14,7 @@ This project was made for syncronizing the riproduction of one or videos via ras
     
  2. .NET installed on your raspberrypi
 
-    -  if you don't have it yet install it following the instruction in this link
+    -  if you don't have it yet, install it by following the instruction in this link
 
      - https://learn.microsoft.com/it-it/dotnet/iot/deployment
 #+end_center
