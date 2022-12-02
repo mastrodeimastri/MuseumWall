@@ -19,6 +19,7 @@ namespace MuseumWall
         Socket[] connections = new Socket[100];
         Thread timer;
         Thread listener;
+        Thread controller;
         IPEndPoint serverEndPoint;
         SemaphoreSlim sem = new(1);
 
@@ -37,8 +38,6 @@ namespace MuseumWall
                 timer.Join();
 
                 Console.WriteLine("timer finito");
-                if (listener.IsAlive)
-                    Console.WriteLine("il listener è vivo");
                 
             }
             catch (SocketException ex)
@@ -68,6 +67,19 @@ namespace MuseumWall
 
             //creo il thread che rimarrà in ascolto di nuove possibili connessioni
             listener = new(AcceptConn);
+
+            //creo un thread che mi permette di comandare i rasp connessi
+            //attraverso degli input da tastiera
+            controller = new(Controller);
+        }
+
+        private void Controller()
+        {
+            while(true)
+            {
+                char k = Console.ReadKey().KeyChar;
+                SendAction(k);
+            }
         }
 
         private void Start()
@@ -75,6 +87,7 @@ namespace MuseumWall
             // avvio i thread
             timer.Start();
             listener.Start();
+            controller.Start();
         }
 
         // Questa funzione crea l'oggetto endpoint
@@ -82,7 +95,7 @@ namespace MuseumWall
         private void CreateEndPoint()
         {
             IPAddress ip;
-            ip = Dns.GetHostAddresses("192.168.1.101")[0];
+            ip = Dns.GetHostAddresses("192.168.1.112")[0];
 
             Console.WriteLine("questo è il mio indirizzo ip: {0}", ip.ToString());
             serverEndPoint = new(ip, 65011);
@@ -118,6 +131,35 @@ namespace MuseumWall
 
                 // esco dal semaforo
                 sem.Release();
+            }
+        }
+
+        private void SendAction(char k)
+        {
+            try
+            {
+                // inizializzo il messaggio
+                byte[] msg = Encoding.UTF8.GetBytes(k.ToString());
+
+                // aspetto di entrare nel semaforo se occupato
+                sem.Wait();
+
+                // se ho raspberry connessi all'endpoint,
+                // invio il segnale di riproduzione
+                if (nConnected != 0)
+                {
+                    for (int i = (0); i < nConnected; i++)
+                    {
+                        // invio il messaggio
+                        _ = connections[i].Send(msg, 0, msg.Length, SocketFlags.None);
+                    }
+                }
+                // esco dal semaforo
+                sem.Release();
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine("Si è verificato un errore durante l'invio del messaggio: {0}", ex.ErrorCode);
             }
         }
 
@@ -164,8 +206,8 @@ namespace MuseumWall
                 // avvio la riproduzione sugli schermi
                 for (int i = 0; i < nScreens; i++)
                 {
-                    Console.WriteLine("dovrei riprodurre il video {0}", i);
-                    //PlayBack(i);
+                    //Console.WriteLine("dovrei riprodurre il video {0}", i);
+                    PlayBack(i);
                 }
             }
         }

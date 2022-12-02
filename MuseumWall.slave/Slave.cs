@@ -13,6 +13,7 @@ namespace MuseumWall
 	{
 		Socket client;
 		Thread timer;
+		Thread reciver;
 		string host;
 		int port;
 
@@ -29,6 +30,8 @@ namespace MuseumWall
 
 				// inizializzo il timer
 				timer = new Thread(Timer);
+
+				reciver = new(ReciveAction);
 
 				// avvio il timer che mi stabilisce un tempo limite entro il quale mi devo collegare al server
 				timer.Start();
@@ -54,7 +57,7 @@ namespace MuseumWall
 		// Entry point dell'eseguibile che andrà a finire sugli slave
 		static void Main(string[] args)
 		{
-			Slave rasp = new Slave("192.168.1.101", 65011);
+			Slave rasp = new Slave("192.168.1.112", 65011);
 			rasp.Run();
 		}
 
@@ -72,6 +75,26 @@ namespace MuseumWall
                 }
             }
 		}
+
+		private void ReciveAction()
+		{
+			byte[] buffer = new byte[100];
+
+			// sto in attesa di ricevere il messaggio
+			client.ReceiveAsync(buffer, SocketFlags.None);
+
+			char k = buffer[0].ToString()[0];
+
+			switch(k)
+			{
+				case 'e':
+                    // System.Diagnostics.Process.Start("/bin/omxplayer", "--display 0 /home/pi/video/2.mp4").WaitForExit();
+                    break;
+				case 'r':
+                    System.Diagnostics.Process.Start("sudo reboot", "-h now").WaitForExit();
+                    break;
+			}
+        }
 
 		public async void Run()
 		{

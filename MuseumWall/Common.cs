@@ -26,19 +26,19 @@ namespace MuseumWall
         private void PlaybackInternal(int display)
         {
             // avvio la riproduzione sul display selezionato
-            if (display == 0)
-                try
-                {
-                    System.Diagnostics.Process.Start("/bin/omxplayer", "--display 0 /home/pi/Slave/1.mp4").WaitForExit();
-                }
-                catch(System.ComponentModel.Win32Exception ex)
-                {
-                    Console.WriteLine("non sono riuscito a riprodurre il video {0}", ex.Message);
-                }
-                //Console.WriteLine("1");
-            else
-                System.Diagnostics.Process.Start("omxplayer --no-osd --display 7 2.mp4");
-                //Console.WriteLine("2");
+            try
+            {
+                if (display == 0)
+                    System.Diagnostics.Process.Start("/bin/omxplayer", "--display 0 /home/pi/video/1.mp4").WaitForExit();
+                    //Console.WriteLine("1");
+                else
+                    System.Diagnostics.Process.Start("/bin/omxplayer", "--display 0 /home/pi/video/2.mp4").WaitForExit();
+                    //Console.WriteLine("2");
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                Console.WriteLine("non sono riuscito a riprodurre il video {0}", ex.Message);
+            }    
         }
 
         public void PlayBack(int display)
