@@ -16,6 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <WarningLevel>4</WarningLevel>
+    <IntermediateOutputPath></IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MuseumWall\MuseumWall.csproj" />

@@ -5,10 +5,11 @@ using System.Text;
 
 namespace MuseumWall
 {
-	// Questa classe implementa l'oggetto slave
-	// cui mi andrà ad identificare un raspberry
-	// che parte in sincronia con il master ed è sottomesso a quel'ultimo
-	public class Slave : Common
+    [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+    // Questa classe implementa l'oggetto slave
+    // cui mi andrà ad identificare un raspberry
+    // che parte in sincronia con il master ed è sottomesso a quel'ultimo
+    public class Slave : Common
 	{
 		Socket client;
 		Thread timer;
@@ -19,25 +20,26 @@ namespace MuseumWall
 		{
 			try
 			{
+				// mi salvo i valori di host e port
 				host = a;
 				port = p;
+
                 // inizializzo il socket client
                 client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
 				// inizializzo il timer
 				timer = new Thread(Timer);
 
-				// starto il server
+				// avvio il timer che mi stabilisce un tempo limite entro il quale mi devo collegare al server
 				timer.Start();
 
                 // connetto il socket al server
-				while(!client.Connected)
-				{
-                    Connect();
+                Connect();
 
-					if (!client.Connected)
-						Console.WriteLine("non sono riuscito a connettermi al server");
-                }
+				// se non è connesso al server scrivo
+				// a terminale ubn messaggio di errore
+				if (!client.Connected)
+					Console.WriteLine("non sono riuscito a connettermi al server");
             }
 			catch(SocketException ex)
 			{
@@ -66,7 +68,7 @@ namespace MuseumWall
                 }
                 catch (SocketException ex)
                 {
-                    Console.WriteLine("Non sono riuscito a connettermi al server : {0}", ex.ErrorCode);
+
                 }
             }
 		}

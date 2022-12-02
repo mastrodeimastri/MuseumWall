@@ -14,6 +14,7 @@ namespace MuseumWall
         int nConnected = 0;
         int nRunning = 0;
 
+        // inizializzo le variabili che mi servono per far funzionare la logica
         Socket master;
         Socket[] connections = new Socket[100];
         Thread timer;
@@ -25,34 +26,19 @@ namespace MuseumWall
         {
             try
             {
+                // inizializzo tutte le variabili necessarie per creare il server
+                CreateServer();
 
-                // Creo l'endpoint
-                CreateEndPoint();
-
-                // inizializzo il socket master che mi fa da server
-                master = new(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-                // bindo il socket master all'endpoint prestabilito
-                master.Bind(serverEndPoint);
-
-                // metto il server in ascolto per le connessioni degli slave
-                master.Listen(100);
-
-                // creo il thread che mi consente di avere un timer entro il
-                // quale vengono accettate le connessioni
-                timer = new Thread(Timer);
-
-                //creo il thread che rimarrà in ascolto di nuove possibili connessioni
-                listener = new(AcceptConn);
-
-                // avvio i thread
-                timer.Start();
-                listener.Start();
+                // starto il server
+                Start();
 
                 // aspetto che il timer finisca per poter iniziare
                 // l'invio del segnale e la riproduzione
                 timer.Join();
+
                 Console.WriteLine("timer finito");
+                if (listener.IsAlive)
+                    Console.WriteLine("il listener è vivo");
                 
             }
             catch (SocketException ex)
@@ -62,13 +48,41 @@ namespace MuseumWall
             }
         }
 
+        private void CreateServer()
+        {
+            // Creo l'endpoint
+            CreateEndPoint();
+
+            // inizializzo il socket master che mi fa da server
+            master = new(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+            // bindo il socket master all'endpoint prestabilito
+            master.Bind(serverEndPoint);
+
+            // metto il server in ascolto per le connessioni degli slave
+            master.Listen(100);
+
+            // creo il thread che mi consente di avere un timer entro il
+            // quale vengono accettate le connessioni
+            timer = new Thread(Timer);
+
+            //creo il thread che rimarrà in ascolto di nuove possibili connessioni
+            listener = new(AcceptConn);
+        }
+
+        private void Start()
+        {
+            // avvio i thread
+            timer.Start();
+            listener.Start();
+        }
+
         // Questa funzione crea l'oggetto endpoint
         // sul quale il master rimarrà in ascolto delle connessioni
         private void CreateEndPoint()
         {
             IPAddress ip;
-            string host = Dns.GetHostName();
-            ip = Dns.GetHostByName(host).AddressList[0];
+            ip = Dns.GetHostAddresses("192.168.1.101")[0];
 
             Console.WriteLine("questo è il mio indirizzo ip: {0}", ip.ToString());
             serverEndPoint = new(ip, 65011);
@@ -144,13 +158,14 @@ namespace MuseumWall
                 // invio il segnale di riproduzione ai rasp che sono in attesa
                 if( nRunning != nConnected)
                 {
+                    Console.WriteLine("sono quiiii");
                     SendInternal();
                 }
-
                 // avvio la riproduzione sugli schermi
                 for (int i = 0; i < nScreens; i++)
                 {
-                    PlayBack(i);
+                    Console.WriteLine("dovrei riprodurre il video {0}", i);
+                    //PlayBack(i);
                 }
             }
         }
