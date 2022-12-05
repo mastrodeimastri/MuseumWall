@@ -13,19 +13,14 @@ namespace MuseumWall
         {
             while (true)
             {
-                Console.WriteLine("sono in attesa");
                 Socket newConn = master.Accept();
 
                 // aspetto di entrare nel semaforo se occupato
                 sem.Wait();
 
-                Console.WriteLine("ho ricevuto una connessione");
-
                 connections[nConnected] = newConn;
 
                 nConnected++;
-
-                Console.WriteLine("ho rilasciato il semaforo");
 
                 // esco dal semaforo
                 sem.Release();
