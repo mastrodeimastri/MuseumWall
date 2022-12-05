@@ -12,6 +12,8 @@ namespace MuseumWall
                 // inizializzo tutte le variabili necessarie per creare il server
                 CreateServer();
 
+                CreateSubProcess();
+
                 // starto il server
                 Start();
 
