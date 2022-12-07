@@ -1,12 +1,20 @@
-* Progetto master
+#+title: README
+#+author: Alvise Silvestri
 
-il Progetto master si struttura su tre diversi file :
+* Functionalities
 
-#+begin_quote
- - Master
- - Listener
- - Handler
-#+end_quote
+#+begin_center
+This project was made for syncronizing the riproduction of one or videos via raspberry pi
+#+end_center
 
-Lo scopo di questa suddivisione è quello di creare due oggetti secondari ( listener e handler ) che poi andranno utilizzatti dall'oggetto principale ( master ) per adempiere a tutte le sue funzioni.
-Per fare ciò, gli oggetti secondari creati devono poter accedere e modificare le variabili interne dell'oggetto principale tramite un sistema a semaforo per evitare criticità di concorrenza.
+* Minimum Requirements
+
+#+begin_center
+ 1. A Raspberry PI 3 or latest.
+    
+ 2. .NET installed on your raspberrypi
+
+    -  if you don't have it yet, install it by following the instruction in the link below
+
+     - https://learn.microsoft.com/it-it/dotnet/iot/deployment
+#+end_center

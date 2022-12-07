@@ -8,7 +8,7 @@ namespace MuseumWall
     // Questa classe implementa l'oggetto master cui identifica
     // il raspeberry al qualce gli slave dovranno andare a far riferimento
     // per l'inizio della riproduzione
-    public class Master : Common
+    public partial class Master : Common
     {
         // inizializzo gli indici per scorrere l'array
         int nConnected = 0;
@@ -18,6 +18,7 @@ namespace MuseumWall
         Socket master;
         Socket[] connections = new Socket[100];
         Thread timer;
+<<<<<<< HEAD
         Thread listener;
         Thread controller;
         IPEndPoint serverEndPoint;
@@ -215,6 +216,13 @@ namespace MuseumWall
 =======
         static void Main(string[] args) { Master rasp = new Master(); rasp.Run(); }
 >>>>>>> Stashed changes
+=======
+        IPEndPoint serverEndPoint;
+        SemaphoreSlim sem = new(1);
+
+        // Entry point per l'eseguibile che andrà a finire sul master
+        static void Main(string[] args) { Master rasp = new Master(); rasp.Run(); }
+>>>>>>> main
     }
 }
 

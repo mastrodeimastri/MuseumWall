@@ -5,19 +5,23 @@ using System.Text;
 
 namespace MuseumWall
 {
-    [System.Runtime.Versioning.SupportedOSPlatform("linux")]
-    // Questa classe implementa l'oggetto slave
-    // cui mi andrà ad identificare un raspberry
-    // che parte in sincronia con il master ed è sottomesso a quel'ultimo
-    public class Slave : Common
+	[System.Runtime.Versioning.SupportedOSPlatform("linux")]
+	// Questa classe implementa l'oggetto slave
+	// cui mi andrà ad identificare un raspberry
+	// che parte in sincronia con il master ed è sottomesso a quel'ultimo
+	public class Slave : Common
 	{
 		Socket client;
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 		Thread timer;
 		Thread reciver;
 =======
 		Thread timer, connecter;
 >>>>>>> Stashed changes
+=======
+		Thread timer, connecter;
+>>>>>>> main
 		string host;
 		int port;
 
@@ -29,22 +33,32 @@ namespace MuseumWall
 				host = a;
 				port = p;
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
                 // inizializzo il socket client
                 client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+=======
+				// inizializzo il socket client
+				client = new(SocketType.Stream, ProtocolType.Tcp);
+>>>>>>> main
 
-				// inizializzo il timer
-				timer = new Thread(Timer);
+				CreateThreads();
 
+<<<<<<< HEAD
 				reciver = new(ReciveAction);
 
 				// avvio il timer che mi stabilisce un tempo limite entro il quale mi devo collegare al server
 				timer.Start();
+=======
+				CreateSubProcess();
+>>>>>>> main
 
-                // connetto il socket al server
-                Connect();
+				timer.Join();
+
+				connecter.Abort();
 
 				// se non è connesso al server scrivo
+<<<<<<< HEAD
 				// a terminale ubn messaggio di errore
 				if (!client.Connected)
 					Console.WriteLine("non sono riuscito a connettermi al server");
@@ -63,11 +77,16 @@ namespace MuseumWall
 				connecter.Abort();
 
 				// se non è connesso al server scrivo
+=======
+>>>>>>> main
 				// a terminale un messaggio di errore
 				Console.WriteLine(!client.Connected ? "Non solo riuscito a connettermi" : "Connesso");
 			}
 			catch (SocketException ex)
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> main
 			{
 				// se il socket mi lancia una exception
 				// la catturo e la printo a schermo
@@ -75,7 +94,7 @@ namespace MuseumWall
 					"creazione del socket o durante la connessione con " +
 					"l'endpoint", ex.Message, ex.ErrorCode);
 			}
-        }
+		}
 
 		// Entry point dell'eseguibile che andrà a finire sugli slave
 		static void Main(string[] args)
@@ -84,6 +103,7 @@ namespace MuseumWall
 			rasp.Run();
 		}
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 		private void Connect()
 		{
@@ -126,6 +146,13 @@ namespace MuseumWall
                     break;
 			}
         }
+=======
+		private void CreateThreads() { timer = new(Timer); connecter = new(Connect); }
+
+		private void Start() { timer.Start(); connecter.Start(); }
+
+		private async void Connect() { await client.ConnectAsync(host, port); }
+>>>>>>> main
 
 		public async void Run()
 		{
@@ -136,15 +163,7 @@ namespace MuseumWall
 			// sto in attesa di ricevere il messaggio
 			client.Receive(buffer, SocketFlags.None);
 
-			while(true)
-			{
-				//Console.WriteLine("2");
-                // avvio la riproduzione dei video
-                for (int i = 0; i < nScreens; i++)
-                {
-                    PlayBack(i);
-                }
-            }
+			StartDisplays();
 		}
 	}
 }
