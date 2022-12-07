@@ -5,7 +5,6 @@ namespace MuseumWall
 {
 	public partial class Master
 	{
-        Thread listener;
 
         // Questa funzione mi permette di accettare
         // tutte le connessioni ricevute entro un dato lasso di tempo

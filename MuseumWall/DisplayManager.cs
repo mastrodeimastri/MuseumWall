@@ -10,7 +10,7 @@ namespace MuseumWall
 			{
 				displays[i] = new Process();
 				displays[i].StartInfo.FileName = "/bin/omxplayer";
-				displays[i].StartInfo.Arguments = "--display " + (i*7) + " --no-osd --no-keys /home/pi/video/" + (i) + ".mp4";
+				displays[i].StartInfo.Arguments = $"--display {i*7} --no-osd --no-keys /home/pi/video/{i}.mp4";
 				displays[i].StartInfo.CreateNoWindow = true;
 			}
 		}

@@ -12,16 +12,7 @@ namespace MuseumWall
 	public class Slave : Common
 	{
 		Socket client;
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-		Thread timer;
-		Thread reciver;
-=======
 		Thread timer, connecter;
->>>>>>> Stashed changes
-=======
-		Thread timer, connecter;
->>>>>>> main
 		string host;
 		int port;
 
@@ -32,40 +23,6 @@ namespace MuseumWall
 				// mi salvo i valori di host e port
 				host = a;
 				port = p;
-
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                // inizializzo il socket client
-                client = new Socket(SocketType.Stream, ProtocolType.Tcp);
-=======
-				// inizializzo il socket client
-				client = new(SocketType.Stream, ProtocolType.Tcp);
->>>>>>> main
-
-				CreateThreads();
-
-<<<<<<< HEAD
-				reciver = new(ReciveAction);
-
-				// avvio il timer che mi stabilisce un tempo limite entro il quale mi devo collegare al server
-				timer.Start();
-=======
-				CreateSubProcess();
->>>>>>> main
-
-				timer.Join();
-
-				connecter.Abort();
-
-				// se non è connesso al server scrivo
-<<<<<<< HEAD
-				// a terminale ubn messaggio di errore
-				if (!client.Connected)
-					Console.WriteLine("non sono riuscito a connettermi al server");
-            }
-			catch(SocketException ex)
-=======
-				// inizializzo il socket client
 				client = new(SocketType.Stream, ProtocolType.Tcp);
 
 				CreateThreads();
@@ -76,17 +33,10 @@ namespace MuseumWall
 
 				connecter.Abort();
 
-				// se non è connesso al server scrivo
-=======
->>>>>>> main
 				// a terminale un messaggio di errore
 				Console.WriteLine(!client.Connected ? "Non solo riuscito a connettermi" : "Connesso");
 			}
 			catch (SocketException ex)
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> main
 			{
 				// se il socket mi lancia una exception
 				// la catturo e la printo a schermo
@@ -103,56 +53,11 @@ namespace MuseumWall
 			rasp.Run();
 		}
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-		private void Connect()
-		{
-            while (!client.Connected && timer.IsAlive)
-			{
-                try
-                {
-					client.Connect(host, port);
-                }
-                catch (SocketException ex)
-                {
-
-                }
-            }
-		}
-=======
-		private void CreateThreads() { timer = new(Timer); connecter = new(Connect); }
-
 		private void Start() { timer.Start(); connecter.Start(); }
 
 		private async void Connect() { await client.ConnectAsync(host, port); }
->>>>>>> Stashed changes
 
-		private void ReciveAction()
-		{
-			byte[] buffer = new byte[100];
-
-			// sto in attesa di ricevere il messaggio
-			client.ReceiveAsync(buffer, SocketFlags.None);
-
-			char k = buffer[0].ToString()[0];
-
-			switch(k)
-			{
-				case 'e':
-                    // System.Diagnostics.Process.Start("/bin/omxplayer", "--display 0 /home/pi/video/2.mp4").WaitForExit();
-                    break;
-				case 'r':
-                    System.Diagnostics.Process.Start("sudo reboot", "-h now").WaitForExit();
-                    break;
-			}
-        }
-=======
 		private void CreateThreads() { timer = new(Timer); connecter = new(Connect); }
-
-		private void Start() { timer.Start(); connecter.Start(); }
-
-		private async void Connect() { await client.ConnectAsync(host, port); }
->>>>>>> main
 
 		public async void Run()
 		{
