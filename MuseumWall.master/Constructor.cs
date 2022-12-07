@@ -29,8 +29,8 @@ namespace MuseumWall
             }
             catch (SocketException ex)
             {
-                Console.WriteLine("Si è verificato un errore o nella creazione" +
-                    " del socket o nel binding della porta: {0}", ex.ErrorCode);
+                Console.WriteLine("Si è verificato un errore o nella creazione " +
+                    $"del socket o nel binding della porta: {ex.ErrorCode}");
             }
         }
     }
