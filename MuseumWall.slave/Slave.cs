@@ -12,8 +12,12 @@ namespace MuseumWall
     public class Slave : Common
 	{
 		Socket client;
+<<<<<<< Updated upstream
 		Thread timer;
 		Thread reciver;
+=======
+		Thread timer, connecter;
+>>>>>>> Stashed changes
 		string host;
 		int port;
 
@@ -25,6 +29,7 @@ namespace MuseumWall
 				host = a;
 				port = p;
 
+<<<<<<< Updated upstream
                 // inizializzo il socket client
                 client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
@@ -45,6 +50,24 @@ namespace MuseumWall
 					Console.WriteLine("non sono riuscito a connettermi al server");
             }
 			catch(SocketException ex)
+=======
+				// inizializzo il socket client
+				client = new(SocketType.Stream, ProtocolType.Tcp);
+
+				CreateThreads();
+
+				CreateSubProcess();
+
+				timer.Join();
+
+				connecter.Abort();
+
+				// se non è connesso al server scrivo
+				// a terminale un messaggio di errore
+				Console.WriteLine(!client.Connected ? "Non solo riuscito a connettermi" : "Connesso");
+			}
+			catch (SocketException ex)
+>>>>>>> Stashed changes
 			{
 				// se il socket mi lancia una exception
 				// la catturo e la printo a schermo
@@ -61,6 +84,7 @@ namespace MuseumWall
 			rasp.Run();
 		}
 
+<<<<<<< Updated upstream
 		private void Connect()
 		{
             while (!client.Connected && timer.IsAlive)
@@ -75,6 +99,13 @@ namespace MuseumWall
                 }
             }
 		}
+=======
+		private void CreateThreads() { timer = new(Timer); connecter = new(Connect); }
+
+		private void Start() { timer.Start(); connecter.Start(); }
+
+		private async void Connect() { await client.ConnectAsync(host, port); }
+>>>>>>> Stashed changes
 
 		private void ReciveAction()
 		{

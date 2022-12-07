@@ -103,6 +103,7 @@ namespace MuseumWall
         }
 
         // Entry point per l'eseguibile che andrà a finire sul master
+<<<<<<< Updated upstream
         static void Main(string[] args)
         {
             Master rasp = new Master();
@@ -211,6 +212,9 @@ namespace MuseumWall
                 }
             }
         }
+=======
+        static void Main(string[] args) { Master rasp = new Master(); rasp.Run(); }
+>>>>>>> Stashed changes
     }
 }
 
