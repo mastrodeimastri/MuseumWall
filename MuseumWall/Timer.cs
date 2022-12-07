@@ -15,9 +15,6 @@ namespace MuseumWall
         // Questa funzione crea un timer di 10 secondi che
         // verrà sfruttato per porre un tempo limite alle
         // connessioni degli slave
-        protected void Timer()
-        {
-           Thread.Sleep(10000);
-        }
+        protected void Timer() { Thread.Sleep(10000); }
     }
 }

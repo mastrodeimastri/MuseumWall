@@ -22,6 +22,7 @@ namespace MuseumWall
                 timer.Join();
 
                 Console.WriteLine("timer finito");
+                
                 if (listener.IsAlive)
                     Console.WriteLine("il listener è vivo");
 

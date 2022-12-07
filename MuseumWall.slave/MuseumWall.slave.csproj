@@ -15,4 +15,10 @@
   <ItemGroup>
     <ProjectReference Include="..\MuseumWall\MuseumWall.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Microsoft.AspNet.WebApi" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.9" />
+  </ItemGroup>
 </Project>

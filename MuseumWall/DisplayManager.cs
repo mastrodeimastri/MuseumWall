@@ -18,10 +18,8 @@ namespace MuseumWall
 		protected void StartDisplays()
 		{
             for (int i = 0; i < nScreens; i++)
-            {
                 displays[i].Start();
-            }
-
+            
             displays[0].WaitForExit();
         }
     }

@@ -22,11 +22,7 @@ namespace MuseumWall
         SemaphoreSlim sem = new(1);
 
         // Entry point per l'eseguibile che andrà a finire sul master
-        static void Main(string[] args)
-        {
-            Master rasp = new Master();
-            rasp.Run();
-        }
+        static void Main(string[] args) { Master rasp = new Master(); rasp.Run(); }
     }
 }
 

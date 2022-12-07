@@ -22,7 +22,7 @@ namespace MuseumWall
 
             // creo il thread che mi consente di avere un timer entro il
             // quale vengono accettate le connessioni
-            timer = new Thread(Timer);
+            timer = new(Timer);
 
             //creo il thread che rimarrà in ascolto di nuove possibili connessioni
             listener = new(AcceptConn);
@@ -32,8 +32,7 @@ namespace MuseumWall
         // sul quale il master rimarrà in ascolto delle connessioni
         private void CreateEndPoint()
         {
-            IPAddress ip;
-            ip = Dns.GetHostAddresses("192.168.1.112")[0];
+            IPAddress ip = Dns.GetHostAddresses("192.168.1.112")[0];
 
             Console.WriteLine("questo è il mio indirizzo ip: {0}", ip.ToString());
             serverEndPoint = new(ip, 65011);

@@ -12,7 +12,7 @@ namespace MuseumWall
 	public class Slave : Common
 	{
 		Socket client;
-		Thread timer;
+		Thread timer, connecter;
 		string host;
 		int port;
 
@@ -25,23 +25,19 @@ namespace MuseumWall
 				port = p;
 
 				// inizializzo il socket client
-				client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+				client = new(SocketType.Stream, ProtocolType.Tcp);
 
-				// inizializzo il timer
-				timer = new Thread(Timer);
-
-				// avvio il timer che mi stabilisce un tempo limite entro il quale mi devo collegare al server
-				timer.Start();
+				CreateThreads();
 
 				CreateSubProcess();
 
-				// connetto il socket al server
-				Connect();
+				timer.Join();
+
+				connecter.Abort();
 
 				// se non è connesso al server scrivo
 				// a terminale un messaggio di errore
-				if (!client.Connected)
-					Console.WriteLine("non sono riuscito a connettermi al server");
+				Console.WriteLine(!client.Connected ? "Non solo riuscito a connettermi" : "Connesso");
 			}
 			catch (SocketException ex)
 			{
@@ -60,20 +56,11 @@ namespace MuseumWall
 			rasp.Run();
 		}
 
-		private void Connect()
-		{
-			while (!client.Connected && timer.IsAlive)
-			{
-				try
-				{
-					client.Connect(host, port);
-				}
-				catch (SocketException ex)
-				{
+		private void CreateThreads() { timer = new(Timer); connecter = new(Connect); }
 
-				}
-			}
-		}
+		private void Start() { timer.Start(); connecter.Start(); }
+
+		private async void Connect() { await client.ConnectAsync(host, port); }
 
 		public async void Run()
 		{

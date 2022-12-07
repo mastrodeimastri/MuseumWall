@@ -20,13 +20,10 @@ namespace MuseumWall
                 // se ho raspberry connessi all'endpoint,
                 // invio il segnale di riproduzione
                 if (nConnected != 0)
-                {
                     for (int i = (nRunning); i < nConnected; i++, nRunning++)
-                    {
                         // invio il messaggio
                         _ = connections[i].Send(msg, 0, msg.Length, SocketFlags.None);
-                    }
-                }
+
                 // esco dal semaforo
                 sem.Release();
             }
