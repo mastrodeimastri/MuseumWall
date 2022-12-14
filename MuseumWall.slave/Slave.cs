@@ -16,13 +16,14 @@ namespace MuseumWall
 		string host;
 		int port;
 
-		public Slave(string a, int p)
+		public Slave(string a, int p, string id) : base(id)
 		{
 			try
 			{
 				// mi salvo i valori di host e port
 				host = a;
 				port = p;
+
 				client = new(SocketType.Stream, ProtocolType.Tcp);
 
 				CreateThreads();
@@ -47,11 +48,7 @@ namespace MuseumWall
 		}
 
 		// Entry point dell'eseguibile che andrà a finire sugli slave
-		static void Main(string[] args)
-		{
-			Slave rasp = new Slave("192.168.1.112", 65011);
-			rasp.Run();
-		}
+		static void Main(string[] args) { Slave rasp = new Slave("192.168.1.112", 65011); rasp.Run(); }
 
 		private void Start() { timer.Start(); connecter.Start(); }
 

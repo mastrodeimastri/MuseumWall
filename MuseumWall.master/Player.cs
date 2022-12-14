@@ -8,8 +8,7 @@ namespace MuseumWall
             while (true)
             {
                 // invio il segnale di riproduzione ai rasp che sono in attesa
-                if (nRunning != nConnected)
-                    SendInternal();
+                if (nRunning != nConnected) SendInternal();
 
                 // avvio la riproduzione sugli schermi
                 StartDisplays();

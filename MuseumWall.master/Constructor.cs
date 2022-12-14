@@ -3,9 +3,9 @@ using System.Net.Sockets;
 
 namespace MuseumWall
 {
-	public partial class Master
+	public partial class Master : Common
 	{
-        public Master()
+        public Master(string id) : base(id)
         {
             try
             {
@@ -23,8 +23,7 @@ namespace MuseumWall
 
                 Console.WriteLine("timer finito");
                 
-                if (listener.IsAlive)
-                    Console.WriteLine("il listener è vivo");
+                if (listener.IsAlive) Console.WriteLine("il listener è vivo");
 
             }
             catch (SocketException ex)

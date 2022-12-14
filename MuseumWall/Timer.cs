@@ -12,6 +12,7 @@ namespace MuseumWall
         protected static int nScreens = 2;
         protected Process[] displays = new Process[nScreens];
 
+        protected string ID;
         // Questa funzione crea un timer di 10 secondi che
         // verrà sfruttato per porre un tempo limite alle
         // connessioni degli slave
